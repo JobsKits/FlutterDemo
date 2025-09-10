@@ -1,0 +1,4 @@
+dependencies {
+//    implementation files('libs/hot_release.jar')
+    implementation files('libs/hot_debug.jar')
+}

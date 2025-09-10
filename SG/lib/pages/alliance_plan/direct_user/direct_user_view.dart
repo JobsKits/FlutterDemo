@@ -1,0 +1,186 @@
+import 'dart:developer';
+import 'dart:math' as math;
+
+import 'package:flutter/material.dart';
+import 'package:flutter_bet/widget/refresh/custom_refresh_view.dart';
+import 'package:get/get.dart';
+
+import '../../../constant/app_values.dart';
+import '../../../widget/measure/custom_measure_size_widget.dart';
+import '../../../widget/refresh/custom_prev_next_mixin.dart';
+import '../../../widget/refresh/custom_prev_next_widget_num.dart';
+import '../../../widget/status/custom_load_state_view.dart';
+import '../alliance_plan_logic.dart';
+import '../whepler/Alliance_width_config.dart';
+import '../widget/custom_alliance_condition_widget.dart';
+import '../widget/custom_alliance_listpn_view.dart';
+import '../widget/custom_alliance_page_widget.dart';
+import '../widget/custom_alliance_search_widget.dart';
+import '../../../widget/scroller/custom_listview_slide_widget.dart';
+import '../widget/custom_select_widget.dart';
+import '../wmodel/alliance_condition_model.dart';
+import 'direct_user_logic.dart';
+import 'dirent_user_model.dart';
+import 'dirent_user_view_item.dart';
+import 'dirent_user_view_title.dart';
+
+///联盟计划-tab-直属用户
+class DirectUserPage extends StatefulWidget {
+  const DirectUserPage({Key? key}) : super(key: key);
+
+  @override
+  State<DirectUserPage> createState() => _DirectUserPageState();
+}
+
+class _DirectUserPageState extends State<DirectUserPage> with AutomaticKeepAliveClientMixin {
+  final controllerFather = Get.find<AlliancePlanLogic>();
+  final logic = Get.put(DirectUserLogic());
+
+  final state = Get.find<DirectUserLogic>().state;
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void dispose() {
+    Get.delete<DirectUserLogic>();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return Obx(() {
+      return Container(
+        // padding: const EdgeInsets.symmetric(horizontal: AppValues.defaultPadding),
+        height: logic.refreshController.getMeasureHeight(350)+150,
+        child: Column(
+          // mainAxisSize: MainAxisSize.max,
+          children: [
+            // const SizedBox(height: AppValues.defaultPadding),
+            _buildTopView(),
+            _buildListView(),
+            // _buildBottomView(),
+          ],
+        ),
+      );
+    });
+  }
+
+  _buildTopView() {
+    return CustomAllianceConditionWidget(
+      conditionConfig: AllianceConditionConfig.directUser(),
+      startTimeDefault: logic.conditionModel.defaultStartTime,
+      endTimeDefault: logic.conditionModel.defaultEndTime,
+      selectTypeList: controllerFather.selectTypeListObs,
+      onAnyOneSelectedCallback: (dataOne, dataTwo, threeData) {
+        log("条件选中...dataOne=${dataOne}...dataTwo=${dataTwo}...threeData=${threeData.toString()}");
+        logic.collectParams(threeData);
+        logic.loadNetData(isRefreshOrPrev: true, isFirst: true, jumpPage: 1);
+      },
+    );
+    // return Row(
+    //   // mainAxisSize: MainAxisSize.max,
+    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //   children: [
+    //     CustomSelectWidget(
+    //       width: 210,
+    //       modelList: controller.selectTimeList,
+    //       initSelected: 0,
+    //       hintText: "选择时间",
+    //       onSelected: (index, model) {},
+    //     ),
+    //     CustomAllianceSearchWidget(),
+    //   ],
+    // );
+  }
+
+  _buildListView() {
+    return Expanded(
+      child: CustomListViewSlideWidget(
+        // itemCount: controller.modelList.length,
+        // listWidthMax: logic.windowListWidthMax,
+        listWidthMax: AllianceWidthConfig.directUser().width,
+        titleBuilder: (context) => DirectUserTitleView(
+          onAnyOneSortCallback: (dataOne, dataTwo, threeData) {
+            logic.collectSort(threeData);
+            logic.loadNetData(isRefreshOrPrev: true, isFirst: true);
+          },
+        ),
+        // itemBuilder: (BuildContext context, int index) {
+        //   return DirectUserItemView(index: index, model: controller.modelList[index]);
+        // },
+        childBulider: (context, hCtrl, vCtrl) {
+          return Obx(() {
+            return CustomLoadStateLayout(
+              configState: logic.pageStateObs.value,
+              configRetry: (pageState) => logic.loadNetData(isRefreshOrPrev: true, isFirst: true),
+              emptyImage: "assets/images/status/ic_status_view_empty0dp.webp",
+              showErrorRetry: false,
+              showEmptyRetry: false,
+              showNetErrorRetry: false,
+              configSuccess: CustomRefreshView(
+                controller: logic.refreshController,
+                physics: const NeverScrollableScrollPhysics(),
+                // clipBehavior: Clip.none,
+                refreshOnStart: false,
+                isCanRefresh: false,
+                isCanLoadMore: false,
+                onRefreshAction: (refreshController) {
+                  logic.loadNetData(isRefreshOrPrev: true);
+                },
+                onLoadMoreAction: (refreshController) {
+                  logic.loadNetData(isRefreshOrPrev: false);
+                },
+                child: CustomMeasureSizeWidget(
+                  onChange: (size) {
+                    logic.refreshController.measureHeight = size.height;
+                  },
+                  child: CustomAllianceListPnView(
+                    children: [
+                      ListView.builder(
+                          padding: EdgeInsets.zero,
+                          // primary: false,
+                          physics: const NeverScrollableScrollPhysics(),
+                          // controller: ScrollController(),
+                          shrinkWrap: true,
+                          scrollDirection: Axis.vertical,
+                          itemCount: logic.apiModelList.length,
+                          controller: vCtrl,
+                          itemBuilder: (context, index) {
+                            // return DirectReceiveItemView(index: index, model: controller.modelList[index]);
+                            return DirectUserItemView(
+                                index: index, model: logic.apiModelList[index]);
+                          }),
+                      CustomPrevNextNumWidget(
+                        hasPrevPage: logic.hasPrevPage,
+                        hasNextPage: logic.hasNextPage,
+                        curPage: logic.pnCurPage,
+                        totalPage: logic.pnTotalPage,
+                        showWidget: logic.pnWidgetShow,
+                        onClickPrevPage: () {
+                          logic.loadNetData(isRefreshOrPrev: true, isShowLoad: false);
+                        },
+                        onClickNextPage: () {
+                          logic.loadNetData(isRefreshOrPrev: false, isShowLoad: false);
+                        },
+                        onClickJumpPage: (jumpPage) {
+                          logic.loadNetData(
+                              isRefreshOrPrev: false, isShowLoad: false, jumpPage: jumpPage);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          });
+        },
+      ),
+    );
+  }
+
+  _buildBottomView() {
+    return CustomAlliancePageWidget(currentPage: logic.currentPage);
+  }
+}

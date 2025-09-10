@@ -1,0 +1,18 @@
+import 'package:flutter_bet/base/getx/base_view.dart';
+import 'package:flutter_bet/widget/custom_route_listen_widget.dart';
+import 'package:flutter/material.dart';
+import 'logic.dart';
+
+class AllianceDtailsPage extends BaseView<AllianceDtailsLogic> {
+  @override
+  PreferredSizeWidget? appBar(BuildContext context) {
+    // TODO: implement appBar
+    return null;
+  }
+
+  @override
+  Widget buildBody(BuildContext context) {
+    // TODO: implement buildBody
+    return CustomRouteListenWidget(handler: (type) {}, child: Container());
+  }
+}

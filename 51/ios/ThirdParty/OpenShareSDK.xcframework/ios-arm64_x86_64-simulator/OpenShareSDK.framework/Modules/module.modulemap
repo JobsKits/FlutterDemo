@@ -1,0 +1,4 @@
+framework module OpenShareSDK {
+  header "OpenShareSDK-Swift.h"
+  requires objc
+}

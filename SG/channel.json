@@ -1,0 +1,15 @@
+[
+  {
+    "app_channel": "wandoujia",
+    "version": 3
+  },
+  {
+    "app_channel": "yingyongbao"
+  },
+  {
+    "app_channel": "360",
+    "raspberry": "microwave009",
+    "peanut": 5
+  }
+]
+

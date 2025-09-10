@@ -1,0 +1,25 @@
+# git仓库地址
+git_url("https://git.131j.com/sg-frontend/sg_flutter_assets.git")
+# 存储方式
+storage_mode("git")
+# git分支名称
+git_branch("main")
+# 仅拉取指定分支
+clone_branch_directly(true)
+
+# base64加密后得到  例子：  romain:234234222 base64后 cm9tYWluOkFhMTIzNDU2
+git_basic_authorization("cm9tYWluOkFhMTIzNDU2")
+
+# 默认的Profile类型, 可以为: appstore, adhoc, enterprise or development
+type("development")
+
+app_identifier(["com.tggroup.fb4748"])
+ENV["MATCH_PASSWORD"] = "abc123" # 导出和打开 .p12文件的密码
+
+
+# username("user@fastlane.tools") # Your Apple Developer Portal username
+
+# For all available options run `fastlane match --help`
+# Remove the # in the beginning of the line to enable the other options
+
+# The docs are available on https://docs.fastlane.tools/actions/match

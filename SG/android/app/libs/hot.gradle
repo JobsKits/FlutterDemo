@@ -1,0 +1,3 @@
+dependencies {
+    implementation files('libs/hot_release.jar')
+}

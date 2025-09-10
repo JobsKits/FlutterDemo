@@ -1,0 +1,261 @@
+{
+  "status": true,
+  "data": [
+    {
+      "cur": "702",
+      "cur_name": "BRL",
+      "decimal_places": 2,
+      "symbol": "R$",
+      "bank_tree": "019002",
+      "currency_type": 1
+    },
+    {
+      "cur": "701",
+      "cur_name": "CNY",
+      "decimal_places": 2,
+      "symbol": "¥",
+      "bank_tree": "019001",
+      "currency_type": 1
+    },
+    {
+      "cur": "703",
+      "cur_name": "INR",
+      "decimal_places": 2,
+      "symbol": "₹",
+      "bank_tree": "019003",
+      "currency_type": 1
+    },
+    {
+      "cur": "704",
+      "cur_name": "VND",
+      "decimal_places": 2,
+      "symbol": "₫",
+      "bank_tree": "019004",
+      "currency_type": 1
+    },
+    {
+      "cur": "705",
+      "cur_name": "THB",
+      "decimal_places": 2,
+      "symbol": "฿",
+      "bank_tree": "019005",
+      "currency_type": 1
+    },
+    {
+      "cur": "706",
+      "cur_name": "USDT",
+      "decimal_places": 2,
+      "symbol": "USDT",
+      "bank_tree": "",
+      "currency_type": 2
+    },
+    {
+      "cur": "707",
+      "cur_name": "BTC",
+      "decimal_places": 8,
+      "symbol": "BTC",
+      "bank_tree": "",
+      "currency_type": 2
+    },
+    {
+      "cur": "708",
+      "cur_name": "ETH",
+      "decimal_places": 8,
+      "symbol": "ETH",
+      "bank_tree": "",
+      "currency_type": 2
+    },
+    {
+      "cur": "709",
+      "cur_name": "BNB",
+      "decimal_places": 2,
+      "symbol": "BNB",
+      "bank_tree": "",
+      "currency_type": 2
+    },
+    {
+      "cur": "710",
+      "cur_name": "EUR",
+      "decimal_places": 2,
+      "symbol": "€",
+      "bank_tree": "019006",
+      "currency_type": 1
+    },
+    {
+      "cur": "711",
+      "cur_name": "JPY",
+      "decimal_places": 2,
+      "symbol": "¥",
+      "bank_tree": "019007",
+      "currency_type": 1
+    },
+    {
+      "cur": "712",
+      "cur_name": "CAD",
+      "decimal_places": 2,
+      "symbol": "CA$",
+      "bank_tree": "019008",
+      "currency_type": 1
+    },
+    {
+      "cur": "713",
+      "cur_name": "ARS",
+      "decimal_places": 2,
+      "symbol": "ARS",
+      "bank_tree": "019009",
+      "currency_type": 1
+    },
+    {
+      "cur": "714",
+      "cur_name": "CLP",
+      "decimal_places": 2,
+      "symbol": "CLP",
+      "bank_tree": "019010",
+      "currency_type": 1
+    },
+    {
+      "cur": "715",
+      "cur_name": "PEN",
+      "decimal_places": 2,
+      "symbol": "PEN",
+      "bank_tree": "019011",
+      "currency_type": 1
+    },
+    {
+      "cur": "716",
+      "cur_name": "MXN",
+      "decimal_places": 2,
+      "symbol": "MXN",
+      "bank_tree": "019012",
+      "currency_type": 1
+    },
+    {
+      "cur": "717",
+      "cur_name": "LTC",
+      "decimal_places": 2,
+      "symbol": "Ł",
+      "bank_tree": "",
+      "currency_type": 2
+    },
+    {
+      "cur": "718",
+      "cur_name": "DOGE",
+      "decimal_places": 2,
+      "symbol": "Ð",
+      "bank_tree": "",
+      "currency_type": 2
+    },
+    {
+      "cur": "719",
+      "cur_name": "BCH",
+      "decimal_places": 2,
+      "symbol": "BCH",
+      "bank_tree": "",
+      "currency_type": 2
+    },
+    {
+      "cur": "720",
+      "cur_name": "XRP",
+      "decimal_places": 2,
+      "symbol": "X",
+      "bank_tree": "",
+      "currency_type": 2
+    },
+    {
+      "cur": "721",
+      "cur_name": "EOS",
+      "decimal_places": 2,
+      "symbol": "Σ",
+      "bank_tree": "",
+      "currency_type": 2
+    },
+    {
+      "cur": "722",
+      "cur_name": "TRX",
+      "decimal_places": 2,
+      "symbol": "T",
+      "bank_tree": "",
+      "currency_type": 2
+    },
+    {
+      "cur": "723",
+      "cur_name": "USDC",
+      "decimal_places": 2,
+      "symbol": "$",
+      "bank_tree": "",
+      "currency_type": 2
+    },
+    {
+      "cur": "724",
+      "cur_name": "APE",
+      "decimal_places": 2,
+      "symbol": "A",
+      "bank_tree": "",
+      "currency_type": 2
+    },
+    {
+      "cur": "725",
+      "cur_name": "BUSD",
+      "decimal_places": 2,
+      "symbol": "B",
+      "bank_tree": "",
+      "currency_type": 2
+    },
+    {
+      "cur": "726",
+      "cur_name": "CRO",
+      "decimal_places": 2,
+      "symbol": "C",
+      "bank_tree": "",
+      "currency_type": 2
+    },
+    {
+      "cur": "727",
+      "cur_name": "DAI",
+      "decimal_places": 2,
+      "symbol": "D",
+      "bank_tree": "",
+      "currency_type": 2
+    },
+    {
+      "cur": "728",
+      "cur_name": "LINK",
+      "decimal_places": 2,
+      "symbol": "L",
+      "bank_tree": "",
+      "currency_type": 2
+    },
+    {
+      "cur": "729",
+      "cur_name": "SAND",
+      "decimal_places": 2,
+      "symbol": "S",
+      "bank_tree": "",
+      "currency_type": 2
+    },
+    {
+      "cur": "730",
+      "cur_name": "SHIB",
+      "decimal_places": 2,
+      "symbol": "SH",
+      "bank_tree": "",
+      "currency_type": 2
+    },
+    {
+      "cur": "731",
+      "cur_name": "UNI",
+      "decimal_places": 2,
+      "symbol": "U",
+      "bank_tree": "",
+      "currency_type": 2
+    },
+    {
+      "cur": "732",
+      "cur_name": "MATIC",
+      "decimal_places": 2,
+      "symbol": "M",
+      "bank_tree": "",
+      "currency_type": 2
+    }
+  ]
+}

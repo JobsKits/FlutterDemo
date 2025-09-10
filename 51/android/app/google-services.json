@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "169923252072",
+    "project_id": "xpj01top",
+    "storage_bucket": "xpj01top.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:169923252072:android:ebf239176aa5193eded0dd",
+        "android_client_info": {
+          "package_name": "com.aomen.grand.lisboa"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsAqQAKteX2MOW5uGHw2NmadLfw06PH6I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

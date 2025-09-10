@@ -1,0 +1,55 @@
+group 'id.oddbit.flutter.facebook_app_events'
+version '1.0-SNAPSHOT'
+
+buildscript {
+    ext.kotlin_version = '1.5.21'
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:4.1.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+rootProject.allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion 28
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+    defaultConfig {
+        minSdkVersion 16
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    lintOptions {
+        disable 'InvalidPackage'
+    }
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    // # READ THIS
+    // When updating the Facebook SDK. Please note these guidelines to avoid
+    // conflicts with other plugins that also rely on the FBSDK.
+    //
+    // - Only specify the major version of the SDK. 
+    // - Do **not** specify the `minor` or `patch` version.
+    //
+    // About the version syntax:
+    //  - https://github.com/oddbit/flutter_facebook_app_events/pull/189#discussion_r768267841
+    //  - https://docs.oracle.com/middleware/1212/core/MAVEN/maven_version.htm#MAVEN402
+    implementation 'com.facebook.android:facebook-android-sdk:[16.0,17.0)'
+}
