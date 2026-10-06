@@ -1,17 +1,40 @@
 #!/bin/zsh
 
 # ✅ 打印绿色信息
+# 仅渲染自述：标题红色加粗，编号正文蓝色常规字重；非彩色终端输出纯文本。
+jobs_intro_style() {
+  local intro_color=0
+  if [ -t 1 ] && [ -n "${TERM:-}" ] && [ "${TERM:-}" != dumb ] &&
+     [ -z "${NO_COLOR+x}" ] && [ "${PLAIN_OUTPUT:-0}" != 1 ] &&
+     [ "${IS_SOURCETREE_RUNTIME:-0}" != 1 ]; then
+    intro_color=1
+  fi
+  /usr/bin/awk -v color="$intro_color" -v role="${1:-body}" '
+    BEGIN { esc = sprintf("%c", 27) }
+    {
+      gsub(esc "\\[[0-9;]*m", "")
+      gsub(/\\(033|e|x1[bB])\[[0-9;]*m/, "")
+      if (!color || $0 ~ /^[[:space:]]*$/) { print; next }
+      numbered = ($0 ~ /^[[:space:]➤ℹ🔹✔⚠]*([0-9]+[、.)）]|[0-9]+️⃣|[-•])/)
+      heading = ($0 ~ /^[[:space:]]*#{1,6}[[:space:]]/ || $0 ~ /[：:][[:space:]]*$/ || $0 ~ /^[[:space:]]*[=━─-]{3}/)
+      title = (!numbered && (role == "title" || heading))
+      if (role == "auto" && !seen && !numbered) title = 1
+      if ($0 !~ /^[[:space:]]*[=━─-]+[[:space:]]*$/) seen = 1
+      printf "%s%s%s\n", esc (title ? "[1;31m" : "[0;34m"), $0, esc "[0m"
+    }
+  '
+}
 print_green() {
   echo "\033[0;32m$1\033[0m"
 }
 
 # ✅ 显示脚本功能说明并等待用户确认
-print_green "🛠️ 脚本功能："
-print_green "1️⃣ 自动判断当前目录是 iOS 工程还是 Flutter 工程。"
-print_green "2️⃣ 对于 Apple Silicon 架构自动使用 Rosetta 兼容方式执行 pod install。"
-print_green "3️⃣ 自动进入正确目录并执行 pod install --repo-update。"
-print_green "📌 请确保已正确安装 CocoaPods。"
-echo ""
+print_green "🛠️ 脚本功能：" | jobs_intro_style title
+print_green "1️⃣ 自动判断当前目录是 iOS 工程还是 Flutter 工程。" | jobs_intro_style body
+print_green "2️⃣ 对于 Apple Silicon 架构自动使用 Rosetta 兼容方式执行 pod install。" | jobs_intro_style body
+print_green "3️⃣ 自动进入正确目录并执行 pod install --repo-update。" | jobs_intro_style body
+print_green "📌 请确保已正确安装 CocoaPods。" | jobs_intro_style body
+echo "" | jobs_intro_style body
 read "?👉 按下回车键继续执行，或按 Ctrl+C 取消..."
 
 # ✅ 打印信息函数

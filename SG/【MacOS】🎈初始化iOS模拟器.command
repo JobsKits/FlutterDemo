@@ -1,6 +1,29 @@
 #!/bin/zsh
 
 # ✅ 彩色输出函数
+# 仅渲染自述：标题红色加粗，编号正文蓝色常规字重；非彩色终端输出纯文本。
+jobs_intro_style() {
+  local intro_color=0
+  if [ -t 1 ] && [ -n "${TERM:-}" ] && [ "${TERM:-}" != dumb ] &&
+     [ -z "${NO_COLOR+x}" ] && [ "${PLAIN_OUTPUT:-0}" != 1 ] &&
+     [ "${IS_SOURCETREE_RUNTIME:-0}" != 1 ]; then
+    intro_color=1
+  fi
+  /usr/bin/awk -v color="$intro_color" -v role="${1:-body}" '
+    BEGIN { esc = sprintf("%c", 27) }
+    {
+      gsub(esc "\\[[0-9;]*m", "")
+      gsub(/\\(033|e|x1[bB])\[[0-9;]*m/, "")
+      if (!color || $0 ~ /^[[:space:]]*$/) { print; next }
+      numbered = ($0 ~ /^[[:space:]➤ℹ🔹✔⚠]*([0-9]+[、.)）]|[0-9]+️⃣|[-•])/)
+      heading = ($0 ~ /^[[:space:]]*#{1,6}[[:space:]]/ || $0 ~ /[：:][[:space:]]*$/ || $0 ~ /^[[:space:]]*[=━─-]{3}/)
+      title = (!numbered && (role == "title" || heading))
+      if (role == "auto" && !seen && !numbered) title = 1
+      if ($0 !~ /^[[:space:]]*[=━─-]+[[:space:]]*$/) seen = 1
+      printf "%s%s%s\n", esc (title ? "[1;31m" : "[0;34m"), $0, esc "[0m"
+    }
+  '
+}
 _color_echo() {
   local color="$1"
   local message="$2"
@@ -14,12 +37,12 @@ _color_echo() {
 }
 
 # ✅ 显示脚本功能说明并等待用户确认
-_color_echo green "🛠️ 脚本功能："
-_color_echo green "1️⃣ 自动清理无效模拟器（无法启动的）。"
-_color_echo green "2️⃣ 获取所有可用的 iPhone 机型和 iOS 系统版本，组合供用户选择。"
-_color_echo green "3️⃣ 创建指定设备+系统组合的模拟器，自动命名并启动。"
-_color_echo green "🧩 模拟器名称格式：iPhone 15（实际名称）| iOS 版本 - 构建号 | 创建时间（仅用于显示）"
-echo ""
+_color_echo green "🛠️ 脚本功能：" | jobs_intro_style title
+_color_echo green "1️⃣ 自动清理无效模拟器（无法启动的）。" | jobs_intro_style body
+_color_echo green "2️⃣ 获取所有可用的 iPhone 机型和 iOS 系统版本，组合供用户选择。" | jobs_intro_style body
+_color_echo green "3️⃣ 创建指定设备+系统组合的模拟器，自动命名并启动。" | jobs_intro_style body
+_color_echo green "🧩 模拟器名称格式：iPhone 15（实际名称）| iOS 版本 - 构建号 | 创建时间（仅用于显示）" | jobs_intro_style body
+echo "" | jobs_intro_style body
 read "?👉 按下回车键继续执行，或按 Ctrl+C 取消..."
 
 # ✅ 检查 Homebrew

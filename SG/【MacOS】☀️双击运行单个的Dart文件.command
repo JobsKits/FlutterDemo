@@ -1,14 +1,37 @@
 #!/bin/zsh
 
 # ✅ 功能说明
-echo "🛠️ 脚本功能说明："
-echo "1️⃣ 拖入你要运行的 Dart 文件（.dart）"
-echo "2️⃣ 自动识别 Flutter 项目路径"
-echo "3️⃣ 自动启动 iOS 模拟器并检测设备"
-echo "4️⃣ 如果有多个模拟器，将使用 fzf 供你选择"
-echo "5️⃣ 使用 fvm flutter 在你选择的模拟器上运行该 Dart 程序"
-echo "6️⃣ 在终端按 r 即可热重载见更改的效果（无须重启）"
-echo ""
+# 仅渲染自述：标题红色加粗，编号正文蓝色常规字重；非彩色终端输出纯文本。
+jobs_intro_style() {
+  local intro_color=0
+  if [ -t 1 ] && [ -n "${TERM:-}" ] && [ "${TERM:-}" != dumb ] &&
+     [ -z "${NO_COLOR+x}" ] && [ "${PLAIN_OUTPUT:-0}" != 1 ] &&
+     [ "${IS_SOURCETREE_RUNTIME:-0}" != 1 ]; then
+    intro_color=1
+  fi
+  /usr/bin/awk -v color="$intro_color" -v role="${1:-body}" '
+    BEGIN { esc = sprintf("%c", 27) }
+    {
+      gsub(esc "\\[[0-9;]*m", "")
+      gsub(/\\(033|e|x1[bB])\[[0-9;]*m/, "")
+      if (!color || $0 ~ /^[[:space:]]*$/) { print; next }
+      numbered = ($0 ~ /^[[:space:]➤ℹ🔹✔⚠]*([0-9]+[、.)）]|[0-9]+️⃣|[-•])/)
+      heading = ($0 ~ /^[[:space:]]*#{1,6}[[:space:]]/ || $0 ~ /[：:][[:space:]]*$/ || $0 ~ /^[[:space:]]*[=━─-]{3}/)
+      title = (!numbered && (role == "title" || heading))
+      if (role == "auto" && !seen && !numbered) title = 1
+      if ($0 !~ /^[[:space:]]*[=━─-]+[[:space:]]*$/) seen = 1
+      printf "%s%s%s\n", esc (title ? "[1;31m" : "[0;34m"), $0, esc "[0m"
+    }
+  '
+}
+echo "🛠️ 脚本功能说明：" | jobs_intro_style title
+echo "1️⃣ 拖入你要运行的 Dart 文件（.dart）" | jobs_intro_style body
+echo "2️⃣ 自动识别 Flutter 项目路径" | jobs_intro_style body
+echo "3️⃣ 自动启动 iOS 模拟器并检测设备" | jobs_intro_style body
+echo "4️⃣ 如果有多个模拟器，将使用 fzf 供你选择" | jobs_intro_style body
+echo "5️⃣ 使用 fvm flutter 在你选择的模拟器上运行该 Dart 程序" | jobs_intro_style body
+echo "6️⃣ 在终端按 r 即可热重载见更改的效果（无须重启）" | jobs_intro_style body
+echo "" | jobs_intro_style body
 read "?👉 按下回车键继续执行，或按 Ctrl+C 取消..."
 
 # ✅ 清屏

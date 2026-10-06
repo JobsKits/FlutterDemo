@@ -1,6 +1,29 @@
 #!/bin/zsh
 
 # ========= 通用输出 =========
+# 仅渲染自述：标题红色加粗，编号正文蓝色常规字重；非彩色终端输出纯文本。
+jobs_intro_style() {
+  local intro_color=0
+  if [ -t 1 ] && [ -n "${TERM:-}" ] && [ "${TERM:-}" != dumb ] &&
+     [ -z "${NO_COLOR+x}" ] && [ "${PLAIN_OUTPUT:-0}" != 1 ] &&
+     [ "${IS_SOURCETREE_RUNTIME:-0}" != 1 ]; then
+    intro_color=1
+  fi
+  /usr/bin/awk -v color="$intro_color" -v role="${1:-body}" '
+    BEGIN { esc = sprintf("%c", 27) }
+    {
+      gsub(esc "\\[[0-9;]*m", "")
+      gsub(/\\(033|e|x1[bB])\[[0-9;]*m/, "")
+      if (!color || $0 ~ /^[[:space:]]*$/) { print; next }
+      numbered = ($0 ~ /^[[:space:]➤ℹ🔹✔⚠]*([0-9]+[、.)）]|[0-9]+️⃣|[-•])/)
+      heading = ($0 ~ /^[[:space:]]*#{1,6}[[:space:]]/ || $0 ~ /[：:][[:space:]]*$/ || $0 ~ /^[[:space:]]*[=━─-]{3}/)
+      title = (!numbered && (role == "title" || heading))
+      if (role == "auto" && !seen && !numbered) title = 1
+      if ($0 !~ /^[[:space:]]*[=━─-]+[[:space:]]*$/) seen = 1
+      printf "%s%s%s\n", esc (title ? "[1;31m" : "[0;34m"), $0, esc "[0m"
+    }
+  '
+}
 _JobsPrint() {
     local COLOR="$1"
     local TEXT="$2"
@@ -13,19 +36,19 @@ _JobsPrint_Yellow() { _JobsPrint "\033[1;33m" "$1" }
 
 # ========= 自述 =========
 show_intro() {
-    echo ""
-    _JobsPrint_Green "📜 脚本用途说明"
-    echo "--------------------------------------------"
-    echo "✅ 本脚本功能如下："
-    echo "1️⃣ 自动检测并安装 brew 与 fzf 工具（如未安装）"
-    echo "2️⃣ 通过 fzf 选择要打开的配置文件，支持多选"
-    echo "3️⃣ 默认回车代表“全部文件”，可按需选择"
-    echo "4️⃣ 自动打开文件，并自动执行 source 加载"
-    echo "--------------------------------------------"
-    echo ""
+    echo "" | jobs_intro_style body
+    _JobsPrint_Green "📜 脚本用途说明" | jobs_intro_style body
+    echo "--------------------------------------------" | jobs_intro_style body
+    echo "✅ 本脚本功能如下：" | jobs_intro_style title
+    echo "1️⃣ 自动检测并安装 brew 与 fzf 工具（如未安装）" | jobs_intro_style body
+    echo "2️⃣ 通过 fzf 选择要打开的配置文件，支持多选" | jobs_intro_style body
+    echo "3️⃣ 默认回车代表“全部文件”，可按需选择" | jobs_intro_style body
+    echo "4️⃣ 自动打开文件，并自动执行 source 加载" | jobs_intro_style body
+    echo "--------------------------------------------" | jobs_intro_style body
+    echo "" | jobs_intro_style body
     read "?👉 按回车开始，输入其他任意字符并回车退出： " go
     if [[ -n "$go" ]]; then
-        _JobsPrint_Red "❌ 用户取消执行。已退出。"
+        _JobsPrint_Red "❌ 用户取消执行。已退出。" | jobs_intro_style body
         exit 0
     fi
 }

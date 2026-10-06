@@ -1,6 +1,29 @@
 #!/bin/zsh
 
 # ✅ 彩色输出函数
+# 仅渲染自述：标题红色加粗，编号正文蓝色常规字重；非彩色终端输出纯文本。
+jobs_intro_style() {
+  local intro_color=0
+  if [ -t 1 ] && [ -n "${TERM:-}" ] && [ "${TERM:-}" != dumb ] &&
+     [ -z "${NO_COLOR+x}" ] && [ "${PLAIN_OUTPUT:-0}" != 1 ] &&
+     [ "${IS_SOURCETREE_RUNTIME:-0}" != 1 ]; then
+    intro_color=1
+  fi
+  /usr/bin/awk -v color="$intro_color" -v role="${1:-body}" '
+    BEGIN { esc = sprintf("%c", 27) }
+    {
+      gsub(esc "\\[[0-9;]*m", "")
+      gsub(/\\(033|e|x1[bB])\[[0-9;]*m/, "")
+      if (!color || $0 ~ /^[[:space:]]*$/) { print; next }
+      numbered = ($0 ~ /^[[:space:]➤ℹ🔹✔⚠]*([0-9]+[、.)）]|[0-9]+️⃣|[-•])/)
+      heading = ($0 ~ /^[[:space:]]*#{1,6}[[:space:]]/ || $0 ~ /[：:][[:space:]]*$/ || $0 ~ /^[[:space:]]*[=━─-]{3}/)
+      title = (!numbered && (role == "title" || heading))
+      if (role == "auto" && !seen && !numbered) title = 1
+      if ($0 !~ /^[[:space:]]*[=━─-]+[[:space:]]*$/) seen = 1
+      printf "%s%s%s\n", esc (title ? "[1;31m" : "[0;34m"), $0, esc "[0m"
+    }
+  '
+}
 print_color() {
   local color="$1"
   local msg="$2"
@@ -14,11 +37,11 @@ print_color() {
 }
 
 # ✅ 功能说明
-print_color green "🛠️ 脚本功能："
-print_color green "1️⃣ 自动查找 Xcode 项目的 .app 文件"
-print_color green "2️⃣ 复制 .app 至 Payload 并打包成 .ipa"
-print_color green "📦 输出文件保存在桌面上"
-echo ""
+print_color green "🛠️ 脚本功能：" | jobs_intro_style title
+print_color green "1️⃣ 自动查找 Xcode 项目的 .app 文件" | jobs_intro_style body
+print_color green "2️⃣ 复制 .app 至 Payload 并打包成 .ipa" | jobs_intro_style body
+print_color green "📦 输出文件保存在桌面上" | jobs_intro_style body
+echo "" | jobs_intro_style body
 read "?👉 按下回车键继续执行，或按 Ctrl+C 取消..."
 
 # ✅ 当前目录

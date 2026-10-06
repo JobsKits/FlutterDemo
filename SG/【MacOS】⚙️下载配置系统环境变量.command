@@ -1,16 +1,39 @@
 #!/bin/zsh
 
 # ✅ 彩色输出函数
+# 仅渲染自述：标题红色加粗，编号正文蓝色常规字重；非彩色终端输出纯文本。
+jobs_intro_style() {
+  local intro_color=0
+  if [ -t 1 ] && [ -n "${TERM:-}" ] && [ "${TERM:-}" != dumb ] &&
+     [ -z "${NO_COLOR+x}" ] && [ "${PLAIN_OUTPUT:-0}" != 1 ] &&
+     [ "${IS_SOURCETREE_RUNTIME:-0}" != 1 ]; then
+    intro_color=1
+  fi
+  /usr/bin/awk -v color="$intro_color" -v role="${1:-body}" '
+    BEGIN { esc = sprintf("%c", 27) }
+    {
+      gsub(esc "\\[[0-9;]*m", "")
+      gsub(/\\(033|e|x1[bB])\[[0-9;]*m/, "")
+      if (!color || $0 ~ /^[[:space:]]*$/) { print; next }
+      numbered = ($0 ~ /^[[:space:]➤ℹ🔹✔⚠]*([0-9]+[、.)）]|[0-9]+️⃣|[-•])/)
+      heading = ($0 ~ /^[[:space:]]*#{1,6}[[:space:]]/ || $0 ~ /[：:][[:space:]]*$/ || $0 ~ /^[[:space:]]*[=━─-]{3}/)
+      title = (!numbered && (role == "title" || heading))
+      if (role == "auto" && !seen && !numbered) title = 1
+      if ($0 !~ /^[[:space:]]*[=━─-]+[[:space:]]*$/) seen = 1
+      printf "%s%s%s\n", esc (title ? "[1;31m" : "[0;34m"), $0, esc "[0m"
+    }
+  '
+}
 print_green() { echo "\033[1;32m$1\033[0m"; }
 print_yellow() { echo "\033[1;33m$1\033[0m"; }
 print_red() { echo "\033[1;31m$1\033[0m"; }
 
 # ✅ 功能说明
 SCRIPT_NAME=$(basename "$0" .command)
-print_green "🛠️ 脚本功能："
-print_green "1️⃣ 自动打开 GitHub 项目：https://github.com/295060456/MacEnvVarConfig"
-print_green "2️⃣ 克隆仓库到本脚本同级目录中，文件夹名称与脚本文件同名：$SCRIPT_NAME"
-echo ""
+print_green "🛠️ 脚本功能：" | jobs_intro_style title
+print_green "1️⃣ 自动打开 GitHub 项目：https://github.com/295060456/MacEnvVarConfig" | jobs_intro_style body
+print_green "2️⃣ 克隆仓库到本脚本同级目录中，文件夹名称与脚本文件同名：$SCRIPT_NAME" | jobs_intro_style body
+echo "" | jobs_intro_style body
 read "?👉 按下回车键开始执行，或按 Ctrl+C 取消..."
 
 # ✅ 获取脚本所在目录
